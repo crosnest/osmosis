@@ -182,7 +182,7 @@ func (k Keeper) withdrawPosition(ctx sdk.Context, owner sdk.AccAddress, position
 		return sdk.Int{}, sdk.Int{}, err
 	}
 
-	_, err = k.collectIncentives(ctx, owner, positionId)
+	_, _, err = k.collectIncentives(ctx, owner, positionId)
 	if err != nil {
 		return sdk.Int{}, sdk.Int{}, err
 	}
@@ -217,7 +217,7 @@ func (k Keeper) withdrawPosition(ctx sdk.Context, owner sdk.AccAddress, position
 			return sdk.Int{}, sdk.Int{}, err
 		}
 
-		if _, err := k.collectIncentives(ctx, owner, positionId); err != nil {
+		if _, _, err := k.collectIncentives(ctx, owner, positionId); err != nil {
 			return sdk.Int{}, sdk.Int{}, err
 		}
 
@@ -288,13 +288,7 @@ func (k Keeper) UpdatePosition(ctx sdk.Context, poolId uint64, owner sdk.AccAddr
 		return sdk.Int{}, sdk.Int{}, err
 	}
 
-	// Transform the provided ticks into their corresponding sqrtPrices.
-	sqrtPriceLowerTick, sqrtPriceUpperTick, err := math.TicksToSqrtPrice(lowerTick, upperTick)
-	if err != nil {
-		return sdk.Int{}, sdk.Int{}, err
-	}
-
-	actualAmount0, actualAmount1 := pool.CalcActualAmounts(ctx, lowerTick, upperTick, sqrtPriceLowerTick, sqrtPriceUpperTick, liquidityDelta)
+	actualAmount0, actualAmount1, err := pool.CalcActualAmounts(ctx, lowerTick, upperTick, liquidityDelta)
 	if err != nil {
 		return sdk.Int{}, sdk.Int{}, err
 	}
@@ -340,13 +334,18 @@ func (k Keeper) initializeInitialPositionForPool(ctx sdk.Context, pool types.Con
 
 	// Calculate the spot price and sqrt price from the amount provided
 	initialSpotPrice := amount1Desired.ToDec().Quo(amount0Desired.ToDec())
-	initialSqrtPrice, err := initialSpotPrice.ApproxSqrt()
+
+	// Calculate the initial tick from the initial spot price
+	// We use banker's rounding here so that the tick is rounded to
+	// the nearest value relative to the true value given the tick spacing of 1.
+	initialTick, err := math.PriceToTickRoundBankers(initialSpotPrice, pool.GetTickSpacing())
 	if err != nil {
 		return err
 	}
 
-	// Calculate the initial tick from the initial spot price
-	initialTick, err := math.PriceToTick(initialSpotPrice, pool.GetTickSpacing())
+	// Since tick can be rounded due to tick spacing
+	// we calculate the initial sqrt price from the initial tick
+	initialSqrtPrice, err := math.TickToSqrtPrice(initialTick)
 	if err != nil {
 		return err
 	}
