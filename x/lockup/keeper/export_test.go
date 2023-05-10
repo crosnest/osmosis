@@ -40,4 +40,7 @@ func CombineKeys(keys ...[]byte) []byte {
 
 func UnlockingPrefix(unlocking bool) []byte {
 	return unlockingPrefix(unlocking)
+
+func (k Keeper) UnlockMaturedLockInternalLogic(ctx sdk.Context, lock types.PeriodLock) error {
+	return k.unlockMaturedLockInternalLogic(ctx, lock)
 }
