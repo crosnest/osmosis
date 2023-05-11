@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/osmosis-labs/osmosis/v15/x/lockup/keeper"
 	cl "github.com/osmosis-labs/osmosis/v15/x/concentrated-liquidity"
 	cltypes "github.com/osmosis-labs/osmosis/v15/x/concentrated-liquidity/types"
+	"github.com/osmosis-labs/osmosis/v15/x/lockup/keeper"
 	"github.com/osmosis-labs/osmosis/v15/x/lockup/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -61,7 +61,7 @@ func (suite *KeeperTestSuite) TestRebondTokens() {
 			unlock:        false,
 			rebondLockID:  defaultLockID,
 			coinsToRebond: notFullRebondCoins,
-			expectedError: fmt.Errorf("lock %d is not unlocking, rebonding only possible in unlocking stage", defaultLockID),
+			expectedError: sdkerrors.Wrap(types.ErrLockNotUnlocking, fmt.Sprintf("lock %d is not unlocking, rebonding only possible in unlocking stage", defaultLockID)),
 		},
 	}
 
@@ -1465,6 +1465,7 @@ func (suite *KeeperTestSuite) assertLockRefs(lock types.PeriodLock) {
 		for _, id := range ids {
 			if lock.ID == id {
 				found = true
+				break
 			}
 		}
 
