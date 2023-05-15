@@ -45,6 +45,23 @@ func (e NotPositiveRequireAmountError) Error() string {
 	return fmt.Sprintf("Required amount should be positive. Got: %s", e.Amount)
 }
 
+type QualifyingLiquidityOrTimeElapsedNotPositiveError struct {
+	QualifyingLiquidity sdk.Dec
+	TimeElapsed         sdk.Dec
+}
+
+func (e QualifyingLiquidityOrTimeElapsedNotPositiveError) Error() string {
+	return fmt.Sprintf("Qualifying liquidity and time elapsed must both be positive. Got: QualifyingLiquidity (%s), timeElapsed (%s)", e.QualifyingLiquidity, e.TimeElapsed)
+}
+
+type TimeElapsedNotPositiveError struct {
+	TimeElapsed sdk.Dec
+}
+
+func (e TimeElapsedNotPositiveError) Error() string {
+	return fmt.Sprintf("Time elapsed must both be positive. Got: timeElapsed (%s)", e.TimeElapsed)
+}
+
 type PositionNotFoundError struct {
 	PoolId    uint64
 	LowerTick int64
@@ -348,13 +365,13 @@ func (e BalancerRecordNotClearedError) Error() string {
 	return fmt.Sprintf("balancer record was not cleared after reward claiming. CL pool id (%d), Balancer pool ID (%d), Uptime index (%d)", e.ClPoolId, e.BalancerPoolId, e.UptimeIndex)
 }
 
-type NonPositiveIncentiveAmountError struct {
-	PoolId          uint64
-	IncentiveAmount sdk.Dec
+type InvalidIncentiveCoinError struct {
+	PoolId        uint64
+	IncentiveCoin sdk.Coin
 }
 
-func (e NonPositiveIncentiveAmountError) Error() string {
-	return fmt.Sprintf("incentive amount must be position (nonzero and nonnegative). Pool id (%d), incentive amount (%s)", e.PoolId, e.IncentiveAmount)
+func (e InvalidIncentiveCoinError) Error() string {
+	return fmt.Sprintf("incentive coin denom must be valid and have non negative amount Pool id (%d), incentive coin (%s)", e.PoolId, e.IncentiveCoin)
 }
 
 type NonPositiveEmissionRateError struct {
@@ -780,4 +797,13 @@ type NumCoinsError struct {
 
 func (e NumCoinsError) Error() string {
 	return fmt.Sprintf("num coins provided (%d) must be 2 for a full range position", e.NumCoins)
+}
+
+type CoinLengthError struct {
+	MaxLength int
+	Length    int
+}
+
+func (e CoinLengthError) Error() string {
+	return fmt.Sprintf("coin length (%d) must be less than or equal to max length (%d)", e.Length, e.MaxLength)
 }
