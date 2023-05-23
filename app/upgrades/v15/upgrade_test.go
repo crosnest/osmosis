@@ -37,6 +37,7 @@ var DefaultAcctFunds sdk.Coins = sdk.NewCoins(
 
 func (suite *UpgradeTestSuite) SetupTest() {
 	suite.Setup()
+	suite.SkipIfWSL()
 }
 
 func TestUpgradeTestSuite(t *testing.T) {
@@ -56,7 +57,7 @@ func (suite *UpgradeTestSuite) TestMigrateNextPoolIdAndCreatePool() {
 	gammKeeper := suite.App.GAMMKeeper
 	poolmanagerKeeper := suite.App.PoolManagerKeeper
 
-	nextPoolId := gammKeeper.GetNextPoolId(ctx)
+	nextPoolId := gammKeeper.GetNextPoolId(ctx) //nolint:staticcheck // we're using the deprecated version for testing.
 	suite.Require().Equal(expectedNextPoolId, nextPoolId)
 
 	// system under test.
@@ -97,13 +98,13 @@ func (suite *UpgradeTestSuite) TestMigrateBalancerToStablePools() {
 	suite.FundAcc(testAccount, DefaultAcctFunds)
 
 	// Create the balancer pool
-	swapFee := sdk.MustNewDecFromStr("0.003")
+	spreadFactor := sdk.MustNewDecFromStr("0.003")
 	exitFee := sdk.ZeroDec()
 	poolID, err := suite.App.PoolManagerKeeper.CreatePool(
 		suite.Ctx,
 		balancer.NewMsgCreateBalancerPool(suite.TestAccs[0],
 			balancer.PoolParams{
-				SwapFee: swapFee,
+				SwapFee: spreadFactor,
 				ExitFee: exitFee,
 			},
 			[]balancer.PoolAsset{
@@ -177,7 +178,7 @@ func (suite *UpgradeTestSuite) TestRegisterOsmoIonMetadata() {
 	bankKeeper := suite.App.BankKeeper
 
 	// meta data should not be found pre-registration of meta data
-	uosmoMetadata, found := suite.App.BankKeeper.GetDenomMetaData(ctx, "uosmo")
+	_, found := suite.App.BankKeeper.GetDenomMetaData(ctx, "uosmo")
 	suite.Require().False(found)
 
 	_, found = suite.App.BankKeeper.GetDenomMetaData(ctx, "uion")
@@ -186,7 +187,7 @@ func (suite *UpgradeTestSuite) TestRegisterOsmoIonMetadata() {
 	// system under test.
 	v15.RegisterOsmoIonMetadata(ctx, *bankKeeper)
 
-	uosmoMetadata, found = suite.App.BankKeeper.GetDenomMetaData(ctx, "uosmo")
+	uosmoMetadata, found := suite.App.BankKeeper.GetDenomMetaData(ctx, "uosmo")
 	suite.Require().True(found)
 
 	uionMetadata, found := suite.App.BankKeeper.GetDenomMetaData(ctx, "uion")
