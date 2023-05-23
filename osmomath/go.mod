@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/cosmos/cosmos-sdk v0.47.2
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -26,7 +26,6 @@ require (
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.1-0.20200219035652-afde56e7acac // indirect
 	github.com/felixge/httpsnoop v1.0.2 // indirect
-	github.com/frankban/quicktest v1.14.4 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-kit/kit v0.12.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
@@ -67,7 +66,7 @@ require (
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
-	github.com/spf13/cast v1.5.0 // indirect
+	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/cobra v1.7.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
