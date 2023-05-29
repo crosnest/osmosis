@@ -373,3 +373,42 @@ pub struct Coin {
     pub amount: Uint128,
 }
 ```
+
+### Governance and Code Id Management
+
+Despite code upload being permissioned by governance on Osmosis, it is allowed to be done by a certain
+set of addresses:
+
+```bash
+osmosisd q wasm params
+code_upload_access:
+  address: ""
+  addresses:
+  - osmo1cd4nn8yzdrrsfqsmmvaafq8r03xn38qgqt8fzh
+  - osmo1wl59k23zngj34l7d42y9yltask7rjlnxgccawc7ltrknp6n52fps94qsjd
+  - osmo19vxp8vq8qm368dr026qxh8v82satwaf79y235lfv6wmgpwxx8dtskedaku
+  - osmo1e0x2hnhhwyek7eq3kcxu2x6pt77wdnwz0lutz9fespdr9utq963qr0y5p5
+  - osmo14n3a65fnqz9jve85l23al6m3pjugf0atvrfqh5
+  - osmo15wna5dwylkuzvljsudyn6zfsd4zl0rkg5ge888mzk4vtnjpp0z5q4e9w58
+  - osmo1r02tlyyaqs6tmrfa4jf37t7ewuxr57qp8ghzly
+  permission: AnyOfAddresses
+instantiate_default_permission: Everybody
+```
+
+We would like to make sure that it is not possible to upload any pool code
+without governance approval. This is why we create two additional governance proposals:
+
+1. Store code and update code id whitelist.
+
+On successful passing of this proposal, the code id of the pool contract will be added to the whitelist.
+As a result, anyone would be able to instantiate a pool contract with this code id. No address will
+be able to maliciously upload a new code id and instantiate a pool contract with it without governance approval.
+
+2. Store code and migrate a specific code id to a new code id.
+
+Similarly, if we want to migrate a contract, anyone can do so but they will need to go
+through a custom governance proposal. This proposal will take the old code id and the new code id
+as well as other migration contract upload and migration parameters. In a single multi-message,
+it will upload the new contract code, migrate the contract, and update the code id whitelist.
+
+Note, that in both cases, x/cosmwasm module account will act as the admin and creator of the contract.
