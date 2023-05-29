@@ -103,6 +103,7 @@ func (k Keeper) EndBlock(ctx sdk.Context) {
 	// get changed pools grabs all altered pool ids from the transient store.
 	// 'altered pool ids' gets automatically cleared on commit by being a transient store
 	changedPoolIds := k.getChangedPools(ctx)
+	fmt.Println("changedPoolIds", changedPoolIds)
 	for _, id := range changedPoolIds {
 		err := k.updateRecords(ctx, id)
 		if err != nil {
@@ -235,9 +236,14 @@ func recordWithUpdatedAccumulators(record types.TwapRecord, newTime time.Time) t
 	}
 
 	// logP0SpotPrice = log_{2}{P_0}
+	fmt.Println("record.P0LastSpotPrice", record.P0LastSpotPrice)
+	fmt.Println("record.P1LastSpotPrice", record.P1LastSpotPrice)
 	logP0SpotPrice := twapLog(record.P0LastSpotPrice)
 	// p0NewGeomAccum = log_{2}{P_0} * timeDelta
 	p0NewGeomAccum := types.SpotPriceMulDuration(logP0SpotPrice, timeDelta)
+	fmt.Println("p0NewGeomAccum", p0NewGeomAccum)
+	fmt.Println("logP0SpotPrice", logP0SpotPrice)
+	fmt.Println("timeDelta", timeDelta)
 	newRecord.GeometricTwapAccumulator = newRecord.GeometricTwapAccumulator.Add(p0NewGeomAccum)
 
 	return newRecord
@@ -281,17 +287,23 @@ func (k Keeper) getMostRecentRecord(ctx sdk.Context, poolId uint64, assetA, asse
 func computeTwap(startRecord types.TwapRecord, endRecord types.TwapRecord, quoteAsset string, strategy twapStrategy) (sdk.Dec, error) {
 	// see if we need to return an error, due to spot price issues
 	var err error = nil
+	fmt.Println("startRecord: ", startRecord.LastErrorTime)
+	fmt.Println("endRecord: ", endRecord.LastErrorTime)
 	if endRecord.LastErrorTime.After(startRecord.Time) ||
 		endRecord.LastErrorTime.Equal(startRecord.Time) ||
 		startRecord.LastErrorTime.Equal(startRecord.Time) {
+		fmt.Println("twap: error in pool spot price occurred between start and end time, twap result may be faulty")
 		err = errors.New("twap: error in pool spot price occurred between start and end time, twap result may be faulty")
 	}
 	timeDelta := endRecord.Time.Sub(startRecord.Time)
+	fmt.Println("time delta: ", timeDelta)
 	// if time difference is 0, then return the last spot price based off of start.
 	if timeDelta == time.Duration(0) {
 		if quoteAsset == startRecord.Asset0Denom {
+			fmt.Println("returning startRecord.P0LastSpotPrice")
 			return endRecord.P0LastSpotPrice, err
 		}
+		fmt.Println("returning startRecord.P1LastSpotPrice")
 		return endRecord.P1LastSpotPrice, err
 	}
 

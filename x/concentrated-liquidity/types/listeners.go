@@ -1,6 +1,10 @@
 package types
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	fmt "fmt"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
 type ConcentratedLiquidityListener interface {
 	// AfterConcentratedPoolCreated runs after a concentrated liquidity poos is initialized.
@@ -26,18 +30,21 @@ func (l ConcentratedLiquidityListeners) AfterConcentratedPoolCreated(ctx sdk.Con
 }
 
 func (l ConcentratedLiquidityListeners) AfterInitialPoolPositionCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
+	fmt.Println("AfterInitialPoolPositionCreated")
 	for i := range l {
 		l[i].AfterInitialPoolPositionCreated(ctx, sender, poolId)
 	}
 }
 
 func (l ConcentratedLiquidityListeners) AfterLastPoolPositionRemoved(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
+	fmt.Println("AfterLastPoolPositionRemoved")
 	for i := range l {
 		l[i].AfterLastPoolPositionRemoved(ctx, sender, poolId)
 	}
 }
 
 func (l ConcentratedLiquidityListeners) AfterConcentratedPoolSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
+	fmt.Println("AfterConcentratedPoolSwap")
 	for i := range l {
 		l[i].AfterConcentratedPoolSwap(ctx, sender, poolId, input, output)
 	}

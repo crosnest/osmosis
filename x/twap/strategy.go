@@ -1,6 +1,8 @@
 package twap
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
@@ -41,6 +43,8 @@ func (s *arithmetic) computeTwap(startRecord types.TwapRecord, endRecord types.T
 // computeTwap computes and returns a geometric TWAP between
 // two records given the quote asset.
 func (s *geometric) computeTwap(startRecord types.TwapRecord, endRecord types.TwapRecord, quoteAsset string) sdk.Dec {
+	fmt.Println("endRecord.GeometricTwapAccumulator", endRecord.GeometricTwapAccumulator)
+	fmt.Println("startRecord.GeometricTwapAccumulator", startRecord.GeometricTwapAccumulator)
 	accumDiff := endRecord.GeometricTwapAccumulator.Sub(startRecord.GeometricTwapAccumulator)
 
 	if accumDiff.IsZero() {

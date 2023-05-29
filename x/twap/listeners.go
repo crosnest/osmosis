@@ -1,6 +1,8 @@
 package twap
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	concentratedliquiditytypes "github.com/osmosis-labs/osmosis/v15/x/concentrated-liquidity/types"
@@ -69,17 +71,21 @@ func (k Keeper) ConcentratedLiquidityListener() concentratedliquiditytypes.Conce
 }
 
 func (l *concentratedLiquidityListener) AfterConcentratedPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
+	fmt.Println("AfterConcentratedPoolCreated")
 	l.k.mustTrackCreatedPool(ctx, poolId)
 }
 
 func (l *concentratedLiquidityListener) AfterInitialPoolPositionCreated(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
+	fmt.Println("AfterInitialPoolPositionCreated")
 	l.k.trackChangedPool(ctx, poolId)
 }
 
 func (l *concentratedLiquidityListener) AfterLastPoolPositionRemoved(ctx sdk.Context, sender sdk.AccAddress, poolId uint64) {
+	fmt.Println("AfterLastPoolPositionRemoved")
 	l.k.trackChangedPool(ctx, poolId)
 }
 
 func (l *concentratedLiquidityListener) AfterConcentratedPoolSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
+	fmt.Println("AfterConcentratedPoolSwap")
 	l.k.trackChangedPool(ctx, poolId)
 }

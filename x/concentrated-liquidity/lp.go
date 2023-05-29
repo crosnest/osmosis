@@ -2,6 +2,7 @@ package concentrated_liquidity
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -121,6 +122,7 @@ func (k Keeper) createPosition(ctx sdk.Context, poolId uint64, owner sdk.AccAddr
 	emitLiquidityChangeEvent(ctx, types.TypeEvtCreatePosition, positionId, owner, poolId, lowerTick, upperTick, joinTime, liquidityDelta, actualAmount0, actualAmount1)
 
 	if !hasPositions {
+		fmt.Println("first position created")
 		// N.B. calling this listener propagates to x/twap for twap record creation.
 		// This is done after initial pool position only because only the first position
 		// initializes the pool's spot price. After the initial position is created, only
