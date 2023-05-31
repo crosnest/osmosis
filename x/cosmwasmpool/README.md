@@ -411,4 +411,4 @@ through a custom governance proposal. This proposal will take the old code id an
 as well as other migration contract upload and migration parameters. In a single multi-message,
 it will upload the new contract code, migrate the contract, and update the code id whitelist.
 
-Note, that in both cases, x/cosmwasm module account will act as the admin and creator of the contract.
+Note, that in both cases, x/cosmwasmpool module account will act as the admin and creator of the contract.
