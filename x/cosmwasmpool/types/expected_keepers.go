@@ -4,6 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	poolmanagertypes "github.com/osmosis-labs/osmosis/v15/x/poolmanager/types"
+
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 )
 
 // AccountKeeper defines the contract needed for AccountKeeper related APIs.
@@ -40,6 +42,9 @@ type ContractKeeper interface {
 	Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte) ([]byte, error)
 
 	Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error)
+
+	// Create uploads and compiles a WASM contract, returning a short identifier for the contract
+	Create(ctx sdk.Context, creator sdk.AccAddress, wasmCode []byte, instantiateAccess *wasmtypes.AccessConfig) (codeID uint64, checksum []byte, err error)
 }
 
 // ContractKeeper defines the interface needed to be fulfilled for

@@ -1,0 +1,21 @@
+syntax = "proto3";
+package osmosis.concentratedliquidity.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/osmosis-labs/osmosis/v15/x/cosmwasmpool/types";
+
+// UploadCosmWasmPoolCodeAndWhiteListProposal is a gov Content type for
+// uploading coswasm pool code and adding it to internal whitelist. Only the
+// code ids created by this message are eligible for being x/cosmwasmpool pools.
+message UploadCosmWasmPoolCodeAndWhiteListProposal {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = false;
+  option (gogoproto.goproto_stringer) = false;
+
+  string title = 1;
+  string description = 2;
+
+  // WASMByteCode can be raw or gzip compressed
+  bytes wasm_byte_code = 3 [ (gogoproto.customname) = "WASMByteCode" ];
+}

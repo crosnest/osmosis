@@ -36,6 +36,9 @@ func (s *KeeperTestHelper) PrepareCustomTransmuterPool(owner sdk.AccAddress, den
 	// Upload contract code and get the code id.
 	codeId := s.StoreCosmWasmPoolContractCode(TransmuterContractName)
 
+	// Add code id to the whitelist.
+	s.App.CosmwasmPoolKeeper.AddToWhitelist(s.Ctx, codeId)
+
 	// Generate instantiate message bytes.
 	instantiateMsgBz := s.GetTransmuterInstantiateMsgBytes(denoms)
 

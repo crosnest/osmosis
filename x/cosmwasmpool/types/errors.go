@@ -17,3 +17,11 @@ type PoolNotFoundError struct {
 func (e PoolNotFoundError) Error() string {
 	return fmt.Sprintf("pool not found. pool id (%d)", e.PoolId)
 }
+
+type CodeIdNotWhitelistedError struct {
+	CodeId uint64
+}
+
+func (e CodeIdNotWhitelistedError) Error() string {
+	return fmt.Sprintf("cannot create coswasm pool with the given code id (%d). Please whitelist it via governance", e.CodeId)
+}
