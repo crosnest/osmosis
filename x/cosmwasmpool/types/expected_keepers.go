@@ -43,8 +43,9 @@ type ContractKeeper interface {
 
 	Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error)
 
-	// Create uploads and compiles a WASM contract, returning a short identifier for the contract
 	Create(ctx sdk.Context, creator sdk.AccAddress, wasmCode []byte, instantiateAccess *wasmtypes.AccessConfig) (codeID uint64, checksum []byte, err error)
+
+	Migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte) ([]byte, error)
 }
 
 // ContractKeeper defines the interface needed to be fulfilled for

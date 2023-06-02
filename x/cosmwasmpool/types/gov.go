@@ -49,6 +49,10 @@ func (p *UploadCosmWasmPoolCodeAndWhiteListProposal) ValidateBasic() error {
 		return err
 	}
 
+	if len(p.WASMByteCode) == 0 {
+		return fmt.Errorf("wasm byte code cannot be nil")
+	}
+
 	return nil
 }
 
