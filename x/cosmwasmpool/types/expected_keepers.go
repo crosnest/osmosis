@@ -3,9 +3,9 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	poolmanagertypes "github.com/osmosis-labs/osmosis/v15/x/poolmanager/types"
-
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
+	poolmanagertypes "github.com/osmosis-labs/osmosis/v16/x/poolmanager/types"
 )
 
 // AccountKeeper defines the contract needed for AccountKeeper related APIs.
